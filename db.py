@@ -53,11 +53,8 @@ def post_user(user):
 
 	with connector.cursor() as cursor:
 
-		#パスワードのハッシュ値を保存
-		passhash = hashlib.sha256(user.password.encode()).hexdigest()
-
 		sql = 'insert into userinfo(name, bikou, pass) values(%s, %s, %s);'
-		cursor.execute(sql, (user.name, user.bikou, passhash))
+		cursor.execute(sql, (user.name, user.bikou, user.password))
 		connector.commit()
 		
 		sql = 'select id from userinfo order by id desc limit 1;'
