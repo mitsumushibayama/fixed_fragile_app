@@ -14,57 +14,43 @@ reference_button.addEventListener('click', () => {
 
     const idbox = document.getElementById("reference_id");
     const passwordbox = document.getElementById("pass");
-    const idvalue = idbox.value;
+    const namevalue = idbox.value;
     const passvalue = passwordbox.value;
 
-    if(idvalue != "" && passvalue != "") {
+    if(namevalue != "" && passvalue != "") {
 
         try {
 
             //ディレクトリトラバーサル防止
-            if(idvalue.includes('.') || idvalue.includes('/')) {
+            if(namevalue.includes('.') || namevalue.includes('/')) {
                 throw new Error('名前に記号は使用できません');
             }
             
             //入力したパスワードのハッシュ化
             digestMessage(passvalue).then(passhash => {
-                console.log(passhash);
-                const PassCheckrequest = new XMLHttpRequest;
+
+                const GetUserInforequest = new XMLHttpRequest;
+                let formdata = {
+                    'name' : namevalue,
+                    'password' : passhash
+                };
         
-                PassCheckrequest.onreadystatechange = function () {
+                GetUserInforequest.onreadystatechange = function () {
 
                     if(this.readyState == 4 && this.status == 200) {
 
                         const response = this.response;
-                        const anshash = response.user_pass[0].pass;
-
-                        if(passhash == anshash) {
-
-                            const request = new XMLHttpRequest();
-                            request.onreadystatechange = function() {
-                                if(this.readyState == 4 && this.status == 200) {
-                                    console.log('DONE:リクエスト完了');
-                                    const responses = this.response;
-                                    let div = document.createElement('div');
-                                    div.innerText = '名前: ' + responses.id_user[0].name + '  備考: ' + responses.id_user[0].bikou;
-                                    document.body.appendChild(div);
-                                }
-                            }
-                            const URL = '/get/user/' + idvalue;
-                            request.open('GET', URL, true);
-                            request.responseType = 'json';
-                            request.send();    
-                        }
-                        else {
-                            alert('パスワードが違います。');
-                        }
+                        let div = document.createElement('div');
+                        div.innerText = '名前: ' + response.user_info[0].name + '備考: ' + response.user_info[0].bikou;
+                        document.body.appendChild(div);
 
                     }
                 }
-                const pcURL = 'get/user/' + idvalue + '/pass';
-                PassCheckrequest.open('GET', pcURL, true);
-                PassCheckrequest.responseType = 'json';
-                PassCheckrequest.send();
+                const URL = '/get/user/info';
+                GetUserInforequest.open('POST', URL, true);
+                GetUserInforequest.setRequestHeader('Content-Type', 'application/json');
+                GetUserInforequest.responseType = 'json';
+                GetUserInforequest.send(JSON.stringify(formdata));
 
             });
             
