@@ -21,7 +21,7 @@ reference_button.addEventListener('click', () => {
 
         try {
 
-            //ディレクトリトラバーサル防止
+            //APIによるディレクトリトラバーサル防止
             if(namevalue.includes('.') || namevalue.includes('/')) {
                 throw new Error('名前に記号は使用できません');
             }
@@ -40,9 +40,15 @@ reference_button.addEventListener('click', () => {
                     if(this.readyState == 4 && this.status == 200) {
 
                         const response = this.response;
+                        console.log(response)
                         let div = document.createElement('div');
                         div.innerText = '名前: ' + response.user_info[0].name + '備考: ' + response.user_info[0].bikou;
                         document.body.appendChild(div);
+
+                    } else if(this.readyState == 4 && this.status == 401) {
+
+                        const response = this.response.detail;
+                        alert(response);
 
                     }
                 }

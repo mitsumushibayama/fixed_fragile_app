@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
@@ -41,6 +41,8 @@ async def post_user(user: user.User):
 @app.post("/get/user/info")
 async def post_user_authinfo(auth_user: auth_user.User):
     json_data = jsonable_encoder(db.get_user_info(auth_user))
+    if json_data == False:
+        raise HTTPException(status_code = 401, detail = "Authorization Failed")
     return JSONResponse(content = json_data)
 
 
