@@ -9,11 +9,14 @@ async function digestMessage(message) {
 
 const reference_button = document.getElementById("reference_button");
 const message = document.getElementById("msg");
+const passwordbox = document.getElementById("pass");
+
+//パスワードを黒丸で表示
+passwordbox.setAttribute('type', 'password');
 
 reference_button.addEventListener('click', () => {
 
     const idbox = document.getElementById("reference_id");
-    const passwordbox = document.getElementById("pass");
     const namevalue = idbox.value;
     const passvalue = passwordbox.value;
 
