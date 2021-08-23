@@ -6,6 +6,8 @@ async function digestMessage(message) {
     return hashHex;
   }
 
+const escapewords = [".", "/", "<", ">", "="];
+
 const nameform = document.getElementById('name');
 const bikouform = document.getElementById('bikou');
 const passform = document.getElementById('pass');
@@ -19,37 +21,56 @@ register_button.addEventListener('click', () => {
 
     if(namevalue != "" && bikouvalue != "" && passvalue != "") {
 
-        digestMessage(passvalue).then(passhash => {
+        try {
 
-            const register_request = new XMLHttpRequest;
+            console.log(namevalue);
 
-            let formdata = {
-                'name': namevalue,
-                'bikou': bikouvalue,
-                'password': passhash
-            };
-
-            register_request.onreadystatechange = function () {
-
-                if(this.readyState == 4 && this.status == 200) {
-
-                    console.log("リクエスト完了");
-                    const div = document.createElement('div');
-                    div.innerText = '登録が完了しました。';
-                    document.body.appendChild(div)
-                    response = this.response;
-                    console.log(response);
-
-                }
-                
+            if(namevalue.includes('.') || namevalue.includes('/') || namevalue.includes('<') || namevalue.includes('>')) {
+                throw new Error('名前に記号は使用できません');
             }
-            const URL = '/post/user';
-            register_request.open('POST', URL, true);
-            register_request.setRequestHeader('Content-Type', 'application/json');
-            register_request.responseType = 'json';
-            register_request.send(JSON.stringify(formdata));
+
+            if(bikouvalue.includes('.') || bikouvalue.includes('/') || bikouvalue.includes('<') || bikouvalue.includes('>')) {
+                throw new Error('備考に記号は使用できません');
+            }
+
+            digestMessage(passvalue).then(passhash => {
+
+                const register_request = new XMLHttpRequest;
+
+                let formdata = {
+                    'name': namevalue,
+                    'bikou': bikouvalue,
+                    'password': passhash
+                };
+
+                register_request.onreadystatechange = function () {
+
+                    if(this.readyState == 4 && this.status == 200) {
+
+                        console.log("リクエスト完了");
+                        const div = document.createElement('div');
+                        div.innerText = '登録が完了しました。';
+                        document.body.appendChild(div)
+                        response = this.response;
+                        console.log(response);
+
+                    }
+                    
+                }
+
+                const URL = '/post/user';
+                register_request.open('POST', URL, true);
+                register_request.setRequestHeader('Content-Type', 'application/json');
+                register_request.responseType = 'json';
+                register_request.send(JSON.stringify(formdata)); 
             
-        });
+            });
+
+        }
+        catch(e) {
+
+            alert(e.message);
+        }       
 
     }
     else {
