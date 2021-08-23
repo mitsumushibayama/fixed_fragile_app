@@ -6,8 +6,6 @@ async function digestMessage(message) {
     return hashHex;
   }
 
-const escapewords = [".", "/", "<", ">", "="];
-
 const nameform = document.getElementById('name');
 const bikouform = document.getElementById('bikou');
 const passform = document.getElementById('pass');
@@ -23,12 +21,12 @@ register_button.addEventListener('click', () => {
 
         try {
 
-            console.log(namevalue);
-
+            //XSS防止(余計な入力を禁止)
             if(namevalue.includes('.') || namevalue.includes('/') || namevalue.includes('<') || namevalue.includes('>')) {
                 throw new Error('名前に記号は使用できません');
             }
 
+            //XSS防止(余計な入力を禁止)
             if(bikouvalue.includes('.') || bikouvalue.includes('/') || bikouvalue.includes('<') || bikouvalue.includes('>')) {
                 throw new Error('備考に記号は使用できません');
             }
