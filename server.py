@@ -36,6 +36,8 @@ def get_register_js():
 @app.post("/post/user")
 async def post_user(user: user.User):
     json_data = jsonable_encoder(db.post_user(user))
+    if json_data == False:
+        raise HTTPException(status_code = 401, detail = "register Failed")
     return JSONResponse(content = json_data)
 
 @app.post("/get/user/info")

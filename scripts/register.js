@@ -1,8 +1,8 @@
 async function digestMessage(message) {
-    const msgUint8 = new TextEncoder().encode(message);                          
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);           
-    const hashArray = Array.from(new Uint8Array(hashBuffer));                    
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); 
+    const msgUint8 = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     return hashHex;
   }
 
@@ -52,8 +52,12 @@ register_button.addEventListener('click', () => {
                         response = this.response;
                         console.log(response);
 
+                    } else if(this.readyState == 4 && this.status == 401) {
+
+                        const response = this.response.detail;
+                        alert(response);
                     }
-                    
+
                 }
 
                 const URL = '/post/user';
@@ -61,14 +65,14 @@ register_button.addEventListener('click', () => {
                 register_request.setRequestHeader('Content-Type', 'application/json');
                 register_request.responseType = 'json';
                 register_request.send(JSON.stringify(formdata)); 
-            
+
             });
 
         }
         catch(e) {
 
             alert(e.message);
-        }       
+        }
 
     }
     else {
